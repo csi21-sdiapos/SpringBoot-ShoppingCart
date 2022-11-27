@@ -57,25 +57,25 @@ public class User implements Serializable {
 	@Column(name = "UserPassword", length = 100, nullable = false)
 	private String userPassword;
 	
-	// relational field with Purchase (one user can make one or more purchases)
+	
+	/******************************************* RELACIONES *********************************************/
+	// relational field with Purchase (1:N) (one user can make one or more purchases)
 	@Valid
 	@OneToMany(mappedBy = "purchaseOwner" , fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	Set<Purchase> purchasesList = new HashSet<>();
 	
-	// relational field with Product (one user can sell one or more products)
+	// relational field with Product (1:N) (one user can sell one or more products)
 	@Valid
 	@OneToMany(mappedBy = "productOwner" , fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	Set<Product> productsList = new HashSet<>();
 	
 	
 	/******************************************* CONSTRUCTORES *********************************************/
-	public User(String userName, String userSurname, String userAvatar, Date userEntryDate, String userEmail,
-			String userPassword) { // without id
+	public User(String userName, String userSurname, String userAvatar, String userEmail, String userPassword) { // without id
 		super();
 		this.userName = userName;
 		this.userSurname = userSurname;
 		this.userAvatar = userAvatar;
-		this.userEntryDate = userEntryDate;
 		this.userEmail = userEmail;
 		this.userPassword = userPassword;
 	}

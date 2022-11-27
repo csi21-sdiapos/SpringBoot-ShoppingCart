@@ -44,13 +44,15 @@ public class Purchase implements Serializable {
 	@Column(name = "PurchaseDate", nullable = false)
 	private Date purchaseEntryDate;
 	
-	// relational field with User (one or more purchases can be made by one user)
+	
+	/******************************************* RELACIONES *********************************************/
+	// relational field with User (N:1) (one or more purchases can be made by one user)
 	@Valid
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "userId")
 	private User purchaseOwner;
 
-	// relational field with Product (one purchase can include one or more products)
+	// relational field with Product (1:N) (one purchase can include one or more products)
 	@Valid
 	@OneToMany(mappedBy = "purchase" , fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	Set<Product> productsList = new HashSet<>();

@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "spring.session.store-type",
-  "type": "java.lang.String",
-  "description": "A description for 'spring.session.store-type'"
-}]}
+{"properties": [
+  {
+    "name": "spring.session.store-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.session.store-type'"
+  },
+  {
+    "name": "spring.session.store-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.session.store-type'"
+  }
+]}

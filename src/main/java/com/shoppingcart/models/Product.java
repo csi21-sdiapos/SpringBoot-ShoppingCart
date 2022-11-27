@@ -35,13 +35,15 @@ public class Product implements Serializable {
 	@Column(name = "ProductImage", nullable = true)
 	private String productImage;
 	
-	// relational field with User (one or more product can be sold by one user)
+	
+	/******************************************* RELACIONES *********************************************/
+	// relational field with User (N:1) (one or more product can be sold by one user)
 	@Valid
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "userId")
 	private User productOwner;
 	
-	// relational field with Purchase (one or more product can be included in one purchase)
+	// relational field with Purchase (N:1) (one or more product can be included in one purchase)
 	@Valid
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "purchaseId")
