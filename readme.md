@@ -17,6 +17,9 @@
 	- [2.5. *com.shoppingcart.ShoppingCart --\> ShoppingCartApplication.java* (Main)](#25-comshoppingcartshoppingcart----shoppingcartapplicationjava-main)
 	- [2.7. Observaciones](#27-observaciones)
 		- [Otras formas de generar la base de datos e insertar datos de ejemplo](#otras-formas-de-generar-la-base-de-datos-e-insertar-datos-de-ejemplo)
+- [3. Implementación de la seguridad](#3-implementación-de-la-seguridad)
+	- [3.1. *com.shoppingcart.implementations --\> UserDetailsServiceImpl.java*](#31-comshoppingcartimplementations----userdetailsserviceimpljava)
+	- [3.2. *com.shoppingcart.config --\> SecurityConfig.java*](#32-comshoppingcartconfig----securityconfigjava)
 
 # 0. Creación del proyecto
 
@@ -857,4 +860,123 @@ Spring Boot, como en otras ocasiones, nos ofrece facilidades para la creación d
 
 - El script de creación de la base de datos debe llamarse schema.sql y debe colocarse en algún lugar del classpath. Un buen sitio para ello podría ser la ruta src/main/resources/, donde está el propio fichero application.properties.
 - El script de inicialización de datos debe llamarse data.sql y debe colocarse en el mismo lugar del fichero anterior.
+
+# 3. Implementación de la seguridad
+
+*AuthenticationManagerBuilder* nos permite (casi) cualquier manera de autentificarnos, siendo una de ellas a través de un servicio de ***UserDetailsService***, el cual nos permite que seamos nosotros los que implementemos un servicio que se encargará de gestionar algunas tareas como de la búsqueda del usuario para la autentificación... entonces seremos nosotros quienes vamos a definir, que busque dentro de nuestro repositorio de usuarios.
+
+![](./img/7.png)
+
+![](./img/8.png)
+
+## 3.1. *com.shoppingcart.implementations --> UserDetailsServiceImpl.java*
+
+```java
+package com.shoppingcart.implementations;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User.UserBuilder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+
+// import com.shoppingcart.models.User; // use it directly to call our class User which has the same name of the User in UserDetails
+import com.shoppingcart.repositories.UserRepository;
+
+public class UserDetailsServiceImpl implements UserDetailsService{
+
+	@Autowired
+	UserRepository userRepository;
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		com.shoppingcart.models.User user = userRepository.findFirstByEmail(username);
+		
+		UserBuilder userBuilder = null;
+		
+		if (user != null) {
+			userBuilder = User.withUsername(username);
+			userBuilder.disabled(false);
+			userBuilder.password(user.getUserPassword());
+			userBuilder.authorities(new SimpleGrantedAuthority("ROLE_USER"));
+		}
+		else {
+			throw new UsernameNotFoundException("No se ha encontrado el usuario: " + username);
+		}
+		
+		return userBuilder.build();
+	}
+}
+```
+
+## 3.2. *com.shoppingcart.config --> SecurityConfig.java*
+
+```java
+package com.shoppingcart.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+	
+	@Autowired
+	UserDetailsService userDetailsService;
+	    
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {   
+		return new BCryptPasswordEncoder();
+	}
+		
+	@Bean
+	public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+		return
+			http
+	        	.getSharedObject(AuthenticationManagerBuilder.class)
+	        		.userDetailsService(userDetailsService)
+	        		.passwordEncoder(passwordEncoder())
+	        		.and()
+	        		
+	        	.build();
+	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+			.authorizeHttpRequests()
+				.requestMatchers("/", "/webjars/**", "/css/**", "/h2-console/**", "/public/**", "/auth/**", "/files/**")
+				.permitAll()
+				.anyRequest().authenticated()
+				.and()
+				
+			.formLogin()
+				.loginPage("/auth/login")
+				.defaultSuccessUrl("/public/index", true)
+				.loginProcessingUrl("/auth/login-post")
+				.permitAll()
+				.and()
+				
+			.logout()
+				.logoutUrl("/auth/logout")
+				.logoutSuccessUrl("/public/index");
+	       
+		http.csrf().disable();				   		// to access to h2 db
+		http.headers().frameOptions().disable();	// to access to h2 db
+			
+		return http.build();
+	}
+}
+```
 
