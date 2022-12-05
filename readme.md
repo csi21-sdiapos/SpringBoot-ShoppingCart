@@ -25,6 +25,16 @@
 	- [4.2. *com.shoppingcart.services --\> UserService.java*](#42-comshoppingcartservices----userservicejava)
 	- [4.3. *com.shoppingcart.services --\> PurchaseService.java*](#43-comshoppingcartservices----purchaseservicejava)
 	- [4.4. *com.shoppingcart.app --\> ShoppingCartApplication.java* (Main)](#44-comshoppingcartapp----shoppingcartapplicationjava-main)
+- [5. Plantillas de las vistas](#5-plantillas-de-las-vistas)
+	- [5.1. *src/main/resources/static/css/styles.css*](#51-srcmainresourcesstaticcssstylescss)
+	- [5.2. *src/main/resources/templates/index.html*](#52-srcmainresourcestemplatesindexhtml)
+	- [5.3. *src/main/resources/templates/login.html*](#53-srcmainresourcestemplatesloginhtml)
+	- [5.4. *src/main/resources/templates/product.html*](#54-srcmainresourcestemplatesproducthtml)
+	- [5.5. *src/main/resources/templates/app/product/productsList.html*](#55-srcmainresourcestemplatesappproductproductslisthtml)
+	- [5.6. *src/main/resources/templates/app/product/productForm.html*](#56-srcmainresourcestemplatesappproductproductformhtml)
+	- [5.7. *src/main/resources/templates/app/purchase/purchasesList.html*](#57-srcmainresourcestemplatesapppurchasepurchaseslisthtml)
+	- [5.8. *src/main/resources/templates/app/purchase/shoppingCart.html*](#58-srcmainresourcestemplatesapppurchaseshoppingcarthtml)
+	- [5.9. *src/main/resources/templates/app/purchase/invoice.html*](#59-srcmainresourcestemplatesapppurchaseinvoicehtml)
 
 # 0. Creación del proyecto
 
@@ -1196,3 +1206,41 @@ public class ShoppingCartApplication {
 	}	
 }
 ```
+
+# 5. Plantillas de las vistas
+
+## 5.1. *src/main/resources/static/css/styles.css*
+
+[styles.css](./src/main/resources/static/css/styles.css)
+
+## 5.2. *src/main/resources/templates/index.html*
+
+[index.html](./src/main/resources/templates/index.html)
+
+## 5.3. *src/main/resources/templates/login.html*
+
+[login.html](./src/main/resources/templates/login.html)
+
+## 5.4. *src/main/resources/templates/product.html*
+
+[product.html](./src/main/resources/templates/Product.html)
+
+## 5.5. *src/main/resources/templates/app/product/productsList.html*
+
+[productsList.html](./src/main/resources/templates/app/product/productsList.html)
+
+## 5.6. *src/main/resources/templates/app/product/productForm.html*
+
+[productForm.html](./src/main/resources/templates/app/product/productForm.html)
+
+## 5.7. *src/main/resources/templates/app/purchase/purchasesList.html*
+
+[purchasesList.html](./src/main/resources/templates/app/purchase/purchasesList.html)
+
+## 5.8. *src/main/resources/templates/app/purchase/shoppingCart.html*
+
+[shoppingCart.html](./src/main/resources/templates/app/purchase/shoppingCart.html)
+
+## 5.9. *src/main/resources/templates/app/purchase/invoice.html*
+
+[invoice.html](./src/main/resources/templates/app/purchase/invoice.html)
