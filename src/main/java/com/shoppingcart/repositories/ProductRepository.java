@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * para buscar todos los productos de una compra que sea nula (es decir, los productos que aún estén en venta)
 	 * @return lista de productos
 	 */
-	List<Product> findByPrurchaseIsNull();
+	List<Product> findByPurchaseIsNull();
 	
 	/**
 	 * para buscar los productos que contengan el nombre que se pasa como parámetro y su compra aún sea nula

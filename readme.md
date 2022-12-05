@@ -20,6 +20,11 @@
 - [3. Implementación de la seguridad](#3-implementación-de-la-seguridad)
 	- [3.1. *com.shoppingcart.implementations --\> UserDetailsServiceImpl.java*](#31-comshoppingcartimplementations----userdetailsserviceimpljava)
 	- [3.2. *com.shoppingcart.config --\> SecurityConfig.java*](#32-comshoppingcartconfig----securityconfigjava)
+- [4. Creación de los servicios](#4-creación-de-los-servicios)
+	- [4.1. *com.shoppingcart.services --\> ProductService.java*](#41-comshoppingcartservices----productservicejava)
+	- [4.2. *com.shoppingcart.services --\> UserService.java*](#42-comshoppingcartservices----userservicejava)
+	- [4.3. *com.shoppingcart.services --\> PurchaseService.java*](#43-comshoppingcartservices----purchaseservicejava)
+	- [4.4. *com.shoppingcart.app --\> ShoppingCartApplication.java* (Main)](#44-comshoppingcartapp----shoppingcartapplicationjava-main)
 
 # 0. Creación del proyecto
 
@@ -980,3 +985,214 @@ public class SecurityConfig {
 }
 ```
 
+# 4. Creación de los servicios
+
+## 4.1. *com.shoppingcart.services --> ProductService.java*
+
+```java
+package com.shoppingcart.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.shoppingcart.models.Product;
+import com.shoppingcart.models.Purchase;
+import com.shoppingcart.models.User;
+import com.shoppingcart.repositories.ProductRepository;
+
+@Service
+public class ProductService {
+
+	@Autowired
+	ProductRepository productRepository;
+	
+	public Product insertProduct(Product product) {
+		return productRepository.save(product);
+	}
+	
+	public void deleteProduct(long id) {
+		productRepository.deleteById(id);
+	}
+	
+	public void deleteProduct(Product product) {
+		productRepository.delete(product);
+	}
+	
+	public Product editProduct(Product product) {
+		return productRepository.save(product);
+	}
+	
+	public Product findById(long id) {
+		return productRepository.findById(id).orElse(null);
+	}
+	
+	public List<Product> findAll() {
+		return productRepository.findAll();
+	}
+	
+	/**********************************************************************************************/
+	
+	public List<Product> productsOfOneOwner(User user) {
+		return productRepository.findByProductOwner(user);
+	}
+	
+	public List<Product> productsOfOnePurchase(Purchase purchase) {
+		return productRepository.findByPurchase(purchase);
+	}
+	
+	public List<Product> productsNotSold() {
+		return productRepository.findByPurchaseIsNull();
+	}
+	
+	public List<Product> searchProducts (String query) {
+		return productRepository.findByNameContainsIgnoreCaseAndPurchaseIsNull(query);
+	}
+	
+	public List<Product> searchMyProducts(String query, User user) {
+		return productRepository.findByNameContainsIgnoreCaseAndProductOwner(query, user);
+	}
+	
+	public List<Product> searchProductsById(List<Long> ids) {
+		return productRepository.findAllById(ids);
+	}	
+}
+```
+
+## 4.2. *com.shoppingcart.services --> UserService.java*
+
+```java
+package com.shoppingcart.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.shoppingcart.models.User;
+import com.shoppingcart.repositories.UserRepository;
+
+@Service
+public class UserService {
+
+	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	public User registerUser(User user) {
+		user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+		return userRepository.save(user);
+	}
+	
+	public User findById(long id) {
+		return userRepository.findById(id).orElse(null);
+	}
+	
+	public User findByEmail(String email) {
+		return userRepository.findFirstByEmail(email);
+	}
+}
+```
+
+## 4.3. *com.shoppingcart.services --> PurchaseService.java*
+
+```java
+package com.shoppingcart.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.shoppingcart.models.Product;
+import com.shoppingcart.models.Purchase;
+import com.shoppingcart.models.User;
+import com.shoppingcart.repositories.PurchaseRepository;
+
+@Service
+public class PurchaseService {
+
+	@Autowired
+	PurchaseRepository purchaseRepository;
+	
+	@Autowired
+	ProductService productService;
+	
+	public Purchase insertPurchase(Purchase purchase, User user) {
+		purchase.setOwner(user);
+		return purchaseRepository.save(purchase);
+	}
+	
+	public Purchase insertPurchase(Purchase purchase) {
+		return purchaseRepository.save(purchase);
+	}
+	
+	public Product addProductToPurchase(Product product, Purchase purchase) {
+		product.setPurchase(purchase);
+		return productService.editProduct(product);
+	}
+	
+	public Purchase searchPurchaseById(long id) {
+		return purchaseRepository.findById(id).orElse(null);
+	}
+	
+	public List<Purchase> searchAllPurchases() {
+		return purchaseRepository.findAll();
+	}
+	
+	public List<Purchase> searchPurchaseByOwner(User user) {
+		return purchaseRepository.findByPurchaseOwner(user);
+	}
+}
+```
+
+## 4.4. *com.shoppingcart.app --> ShoppingCartApplication.java* (Main)
+
+```java
+package com.shoppingcart.app;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import com.shoppingcart.models.Product;
+import com.shoppingcart.models.User;
+import com.shoppingcart.services.ProductService;
+import com.shoppingcart.services.UserService;
+
+@SpringBootApplication
+public class ShoppingCartApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ShoppingCartApplication.class, args);
+	}
+	
+	@Bean
+	public CommandLineRunner initData(UserService userService, ProductService productService) {
+		return args -> {
+			User user1 = new User("Luis Miguel", "López Magaña", null, "luismi.lopez@openwebinars.net", "luismi");
+			user1 = userService.registerUser(user1);
+
+			User user2 = new User("Antonio", "García Martín", null, "antonio.garcia@openwebinars.net", "antonio");
+			user2 = userService.registerUser(user2);
+			
+			List<Product> productsList = Arrays.asList
+				(
+					new Product("Bicicleta de montaña", 100.0f, "https://www.decathlon.es/media/835/8350582/big_23c25284-2810-415d-8bcc-e6bebdb536fc.jpg", user1),
+					new Product("Golf GTI Serie 2", 2500.0f, "https://www.minicar.es/large/Volkswagen-Golf-GTi-G60-Serie-II-%281990%29-Norev-1%3A18-i22889.jpg", user1),
+					new Product("Raqueta de tenis", 10.5f, "https://imgredirect.milanuncios.com/fg/2311/04/tenis/Raqueta-tenis-de-segunda-mano-en-Madrid-231104755_1.jpg?VersionId=T9dPhTf.3ZWiAFjnB7CvGKsvbdfPLHht", user1),
+					new Product("Xbox One X", 425.0f, "https://images.vibbo.com/635x476/860/86038583196.jpg", user2),
+					new Product("Trípode flexible", 10.0f, "https://images.vibbo.com/635x476/860/86074256163.jpg", user2),
+					new Product("Iphone 7 128 GB", 350.0f, "https://store.storeimages.cdn-apple.com/4667/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=470&hei=556&fmt=jpeg&qlt=95&op_usm=0.5,0.5&.v=1472430205982", user2));
+			
+			productsList.forEach(productService::insertProduct);
+		};
+	}	
+}
+```
