@@ -17,10 +17,11 @@
 	<description>Spring MVC project</description>
 	
 	<properties>
-		<java.version>19</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- <maven.compiler.source>1.8</maven.compiler.source> -->
-    	<!-- <maven.compiler.target>1.8</maven.compiler.target> -->
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+    	<maven.compiler.target>1.8</maven.compiler.target>
+    	<start-class>com.shoppingcart.app.ShoppingCartApplication</start-class>
     	<!-- <org.springframework-version>5.3.23</org.springframework-version> -->
     	<!-- <hibernate.version>5.6.12.Final</hibernate.version> -->
 		<!-- <postgresql.connector.version>42.5.0</postgresql.connector.version> -->
@@ -329,6 +330,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<!-- <version>3.1.0</version> -->
+				<!-- Add the following exclusions here. -->
+				<configuration>
+					<nonFilteredFileExtensions>
+						<nonFilteredFileExtension>properties</nonFilteredFileExtension>
+					</nonFilteredFileExtensions>
+				</configuration>
+			</plugin>
 
 <!--	
 			<plugin>
@@ -372,6 +385,14 @@
 		        <version>3.0.0-M7</version>
 		    </plugin>
 -->
+			<plugin>  
+			    <groupId>org.apache.maven.plugins</groupId>  
+			    <artifactId>maven-surefire-plugin</artifactId>  
+			    <!-- <version>2.22.2</version> --> 
+			    <configuration>  
+			    <skipTests>true</skipTests>  
+			    </configuration>  
+			</plugin>  
 <!--	      
 		    <plugin>
 	        	<artifactId>maven-install-plugin</artifactId>
