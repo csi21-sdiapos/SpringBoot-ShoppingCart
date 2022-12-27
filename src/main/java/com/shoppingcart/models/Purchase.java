@@ -40,7 +40,8 @@ public class Purchase implements Serializable {
 	private long purchaseId;
 	
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE) // https://stackoverflow.com/questions/25333711/what-is-the-use-of-the-temporal-annotation-in-hibernate
 	@Column(name = "PurchaseDate", nullable = false)
 	private Date purchaseEntryDate;
 	

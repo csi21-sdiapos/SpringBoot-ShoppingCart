@@ -25,6 +25,7 @@
 	- [4.2. *com.shoppingcart.services --\> UserService.java*](#42-comshoppingcartservices----userservicejava)
 	- [4.3. *com.shoppingcart.services --\> PurchaseService.java*](#43-comshoppingcartservices----purchaseservicejava)
 	- [4.4. *com.shoppingcart.app --\> ShoppingCartApplication.java* (Main)](#44-comshoppingcartapp----shoppingcartapplicationjava-main)
+	- [4.5. *com.shoppingcart.app --\> ServletInitializer.java*](#45-comshoppingcartapp----servletinitializerjava)
 - [5. Plantillas de las vistas](#5-plantillas-de-las-vistas)
 	- [5.1. *src/main/resources/static/css/styles.css*](#51-srcmainresourcesstaticcssstylescss)
 	- [5.2. *src/main/resources/templates/index.html*](#52-srcmainresourcestemplatesindexhtml)
@@ -37,6 +38,8 @@
 	- [5.9. *src/main/resources/templates/app/purchase/invoice.html*](#59-srcmainresourcestemplatesapppurchaseinvoicehtml)
 - [6. Login y Register](#6-login-y-register)
 	- [*com.shoppingcart.controllers --\> LoginController.java*](#comshoppingcartcontrollers----logincontrollerjava)
+- [7. Listado de productos](#7-listado-de-productos)
+- [Errores](#errores)
 
 # 0. Creación del proyecto
 
@@ -60,24 +63,31 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.6</version>
+		<version>3.0.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	
-	<groupId>com.example</groupId>
+	<groupId>com.shoppingcart</groupId>
 	<artifactId>ShoppingCart</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>ShoppingCart</name>
-	<description>online-ecommerce</description>
+	<description>Spring MVC project</description>
 	
 	<properties>
-		<java.version>19</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+    	<maven.compiler.target>1.8</maven.compiler.target>
+    	<start-class>com.shoppingcart.app.ShoppingCartApplication</start-class>
+    	<!-- <org.springframework-version>5.3.23</org.springframework-version> -->
+    	<!-- <hibernate.version>5.6.12.Final</hibernate.version> -->
+		<!-- <postgresql.connector.version>42.5.0</postgresql.connector.version> -->
 	</properties>
 	
 	<dependencies>
 	
-	<!-- _______________________________________ Spring _________________________________________ -->
+		<!-- _______________________________________ Spring _________________________________________ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -126,46 +136,332 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <!-- <version>6.0.0</version> -->
+		</dependency>
+		
 		<!-- _______________________________________ Database _________________________________________ -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <!-- <version>42.5.0</version> -->
+		</dependency>
+	
 		<!-- _______________________________________ Thymeleaf _________________________________________ -->
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+<!--
+		<dependency>
+		    <groupId>org.thymeleaf</groupId>
+		    <artifactId>thymeleaf</artifactId>
+		    <version>3.0.15.RELEASE</version>
+		</dependency>
+-->
+	
+		<!-- _______________________________________ Jakarta _________________________________________ -->
+		<dependency>
+		    <groupId>jakarta.servlet</groupId>
+		    <artifactId>jakarta.servlet-api</artifactId>
+		    <!-- <version>6.0.0</version> -->
+		    <scope>provided</scope>
+		</dependency>
+<!--
+		<dependency>
+		    <groupId>jakarta.servlet.jsp</groupId>
+		    <artifactId>jakarta.servlet.jsp-api</artifactId>
+		    <version>3.1.0</version>
+		    <scope>provided</scope>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>jakarta.servlet.jsp.jstl</groupId>
+		    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>jakarta.annotation</groupId>
+		    <artifactId>jakarta.annotation-api</artifactId>
+		    <version>2.1.1</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>jakarta.xml.bind</groupId>
+		    <artifactId>jakarta.xml.bind-api</artifactId>
+		    <version>4.0.0</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>jakarta.inject</groupId>
+		    <artifactId>jakarta.inject-api</artifactId>
+		    <version>2.0.1</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>jakarta.ws.rs</groupId>
+		    <artifactId>jakarta.ws.rs-api</artifactId>
+		    <version>3.1.0</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>jakarta.validation</groupId>
+		    <artifactId>jakarta.validation-api</artifactId>
+		    <version>3.0.2</version>
+		</dependency>
+-->
+		<dependency>
+		    <groupId>jakarta.persistence</groupId>
+		    <artifactId>jakarta.persistence-api</artifactId>
+		    <!-- <version>3.1.0</version> -->
+		</dependency>
+<!--
+		<dependency>
+		    <groupId>jakarta.activation</groupId>
+		    <artifactId>jakarta.activation-api</artifactId>
+		    <version>2.1.0</version>
+		</dependency>
+-->
+	
+		<!-- _______________________________________ Javax _________________________________________ -->
+		<dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>javax.servlet.jsp-api</artifactId>
+		    <version>2.3.3</version>
+		    <scope>provided</scope>
 		</dependency>
 		
-		<!-- _______________________________________ WebJars _________________________________________ -->
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>bootstrap</artifactId>
-		    <version>5.2.2</version>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
 		</dependency>
 		
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>jquery</artifactId>
-		    <version>3.6.1</version>
+		    <groupId>javax.persistence</groupId>
+		    <artifactId>javax.persistence-api</artifactId>
+		    <version>2.2</version>
+		</dependency>
+		
+		<!-- _______________________________________ Hibernate _________________________________________ -->
+		<dependency>
+		    <groupId>org.hibernate.validator</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <!-- <version>8.0.0.Final</version> -->
+		</dependency>
+	
+		<dependency>
+		    <groupId>org.hibernate.orm</groupId>
+		    <artifactId>hibernate-core</artifactId>
+		    <!-- <version>6.1.5.Final</version> -->
 		</dependency>
 		
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>webjars-locator</artifactId>
-		    <version>0.46</version>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-core-jakarta</artifactId>
+		    <version>5.6.14.Final</version>
 		</dependency>
+<!--
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-annotations</artifactId>
+		    <version>3.5.6-Final</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>org.hibernate.javax.persistence</groupId>
+		    <artifactId>hibernate-jpa-2.1-api</artifactId>
+		    <version>1.0.2.Final</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>org.eclipse.persistence</groupId>
+		    <artifactId>org.eclipse.persistence.jpa</artifactId>
+		    <version>4.0.0</version>
+		</dependency>
+-->
 
+		<!-- _______________________________________ Tiles _________________________________________ -->
+<!--
+		<dependency>
+		    <groupId>org.apache.tiles</groupId>
+		    <artifactId>tiles-jsp</artifactId>
+		    <version>3.0.8</version>
+		</dependency>
+-->
+<!--	
+		<dependency>
+		    <groupId>org.apache.tiles</groupId>
+		    <artifactId>tiles-core</artifactId>
+		    <version>3.0.8</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>org.apache.tiles</groupId>
+		    <artifactId>tiles-api</artifactId>
+		    <version>3.0.8</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>org.apache.tiles</groupId>
+		    <artifactId>tiles-servlet</artifactId>
+		    <version>3.0.8</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>org.apache.tiles</groupId>
+		    <artifactId>tiles-template</artifactId>
+		    <version>3.0.8</version>
+		</dependency>
+-->
+
+		<!-- _______________________________________ MapStruct _________________________________________ -->
+<!--
+		<dependency>
+		    <groupId>org.mapstruct</groupId>
+		    <artifactId>mapstruct</artifactId>
+		    <version>1.5.3.Final</version>
+		</dependency>
+-->
+<!--	
+		<dependency>
+		    <groupId>org.mapstruct</groupId>
+		    <artifactId>mapstruct-processor</artifactId>
+		    <version>1.5.3.Final</version>
+		</dependency>
+-->
+	
+		<!-- _______________________________________ Log4j2 _________________________________________ -->
+		<!-- log4j2 – Failed to load class “org.slf4j.impl.StaticLoggerBinder” -->
+		<!-- https://mkyong.com/java/log4j2-failed-to-load-class-org-slf4j-impl-staticloggerbinder/ -->
+<!--
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.19.0</version>
+		</dependency>
+-->
+<!--
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j-impl</artifactId>
+		    <version>2.19.0</version>
+		    <scope>test</scope>
+		</dependency>
+-->
+
+		<!-- _______________________________________ TagLibs _________________________________________ -->
+		<dependency>
+		    <groupId>org.apache.taglibs</groupId>
+		    <artifactId>taglibs-standard-impl</artifactId>
+		    <version>1.2.5</version>
+		    <scope>runtime</scope>
+		</dependency>
+	
 	</dependencies>
 
 	<build>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<!-- <version>3.1.0</version> -->
+				<!-- Add the following exclusions here. -->
+				<configuration>
+					<nonFilteredFileExtensions>
+						<nonFilteredFileExtension>properties</nonFilteredFileExtension>
+					</nonFilteredFileExtensions>
+				</configuration>
+			</plugin>
+
+<!--	
+			<plugin>
+		    	<artifactId>maven-clean-plugin</artifactId>
+		        <version>3.2.0</version>
+		 	</plugin>
+-->
+<!--	      
+	        <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-war-plugin</artifactId>
+		        <version>3.3.2</version>
+		        <configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+		    </plugin>
+-->
+<!--        
+	        <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+		        <version>3.10.1</version>
+		        <configuration>
+		        	<source>1.8</source>
+		          	<target>1.8</target>
+		          
+		          	<annotationProcessorPaths>
+	                	<path>
+	                    	<groupId>org.mapstruct</groupId>
+						    <artifactId>mapstruct-processor</artifactId>
+						    <version>1.5.3.Final</version>
+	                	</path>
+	            	</annotationProcessorPaths>
+		        </configuration>
+			</plugin>
+-->
+<!--	      
+		    <plugin>
+		    	<groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <version>3.0.0-M7</version>
+		    </plugin>
+-->
+			<plugin>  
+			    <groupId>org.apache.maven.plugins</groupId>  
+			    <artifactId>maven-surefire-plugin</artifactId>  
+			    <!-- <version>2.22.2</version> --> 
+			    <configuration>  
+			    <skipTests>true</skipTests>  
+			    </configuration>  
+			</plugin>  
+<!--	      
+		    <plugin>
+	        	<artifactId>maven-install-plugin</artifactId>
+	          	<version>3.0.1</version>
+	        </plugin>
+-->
+<!--        
+	        <plugin>
+	          <artifactId>maven-deploy-plugin</artifactId>
+	          <version>3.0.0</version>
+	        </plugin>
+-->
 		</plugins>
 	</build>
 
@@ -253,7 +549,8 @@ public class User implements Serializable {
 	private String userAvatar;
 	
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
+	//	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE) // https://stackoverflow.com/questions/25333711/what-is-the-use-of-the-temporal-annotation-in-hibernate
 	@Column(name = "UserEntryDate", nullable = false)
 	private Date userEntryDate;
 	
@@ -437,7 +734,8 @@ public class Purchase implements Serializable {
 	private long purchaseId;
 	
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
+	//	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE) // https://stackoverflow.com/questions/25333711/what-is-the-use-of-the-temporal-annotation-in-hibernate
 	@Column(name = "PurchaseDate", nullable = false)
 	private Date purchaseEntryDate;
 	
@@ -902,6 +1200,7 @@ import org.springframework.security.core.userdetails.User;
 // import com.shoppingcart.models.User; // use it directly to call our class User which has the same name of the User in UserDetails
 import com.shoppingcart.repositories.UserRepository;
 
+@Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService{
 
 	@Autowired
@@ -973,21 +1272,21 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests()
-				.requestMatchers("/", "/webjars/**", "/css/**", "/h2-console/**", "/public/**", "/auth/**", "/files/**")
+				.requestMatchers("/", "/webjars/**", "/css/**", "/h2-console/**", "/home/**", "/auth/**", "/files/**")
 				.permitAll()
 				.anyRequest().authenticated()
 				.and()
 				
 			.formLogin()
 				.loginPage("/auth/login")
-				.defaultSuccessUrl("/public/index", true)
+				.defaultSuccessUrl("/home/index", true)
 				.loginProcessingUrl("/auth/login-post")
 				.permitAll()
 				.and()
 				
 			.logout()
 				.logoutUrl("/auth/logout")
-				.logoutSuccessUrl("/public/index");
+				.logoutSuccessUrl("/home/index");
 	       
 		http.csrf().disable();				   		// to access to h2 db
 		http.headers().frameOptions().disable();	// to access to h2 db
@@ -1171,7 +1470,9 @@ import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.shoppingcart.models.Product;
 import com.shoppingcart.models.User;
@@ -1183,11 +1484,16 @@ public class ShoppingCartApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShoppingCartApplication.class, args);
+		
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-jpa-hibernate-context.xml");
+		UserService userService = applicationContext.getBean(UserService.class);
+		ProductService productService = applicationContext.getBean(ProductService.class);
 	}
 	
 	@Bean
 	public CommandLineRunner initData(UserService userService, ProductService productService) {
 		return args -> {
+		
 			User user1 = new User("Luis Miguel", "López Magaña", null, "luismi.lopez@openwebinars.net", "luismi");
 			user1 = userService.registerUser(user1);
 
@@ -1206,6 +1512,57 @@ public class ShoppingCartApplication {
 			productsList.forEach(productService::insertProduct);
 		};
 	}	
+}
+```
+
+## 4.5. *com.shoppingcart.app --> ServletInitializer.java*
+
+```java
+package com.shoppingcart.app;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+// Consider defining a bean of type 'package' in your configuration
+// https://stackoverflow.com/questions/40384056/consider-defining-a-bean-of-type-package-in-your-configuration-spring-boot
+@SpringBootApplication
+@ComponentScan({
+	"com.shoppingcart.app",
+	"com.shoppingcart.config",
+	"com.shoppingcart.controllers",
+	"com.shoppingcart.implementations",
+	"com.shoppingcart.models",
+	"com.shoppingcart.repositories",
+	"com.shoppingcart.services"
+})
+@EntityScan({
+	"com.shoppingcart.app",
+	"com.shoppingcart.config",
+	"com.shoppingcart.controllers",
+	"com.shoppingcart.implementations",
+	"com.shoppingcart.models",
+	"com.shoppingcart.repositories",
+	"com.shoppingcart.services"
+})
+@EnableJpaRepositories({
+	"com.shoppingcart.app",
+	"com.shoppingcart.config",
+	"com.shoppingcart.controllers",
+	"com.shoppingcart.implementations",
+	"com.shoppingcart.models",
+	"com.shoppingcart.repositories",
+	"com.shoppingcart.services"
+})
+public class ServletInitializer extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(ShoppingCartApplication.class);
+	}
 }
 ```
 
@@ -1272,7 +1629,7 @@ public class LoginController {
 	
 	@GetMapping("/")
 	public String welcome() {
-		return "redirect:/public/"; // construiremos esta ruta más tarde en otro controlador, la cual será el listado de todos los productos
+		return "redirect:/home/"; // construiremos esta ruta más tarde en otro controlador, la cual será el listado de todos los productos
 	}
 	
 	@GetMapping("/auth/login")
@@ -1289,3 +1646,25 @@ public class LoginController {
 	}
 }
 ```
+
+# 7. Listado de productos
+
+# Errores
+
+1. org.springframework.beans.factory.UnsatisfiedDependencyException:
+- Error creating bean with name 'securityConfig': Unsatisfied dependency expressed through field 'userDetailsService'
+
+2. *caused by:* org.springframework.beans.factory.UnsatisfiedDependencyException:
+- Error creating bean with name 'userDetailsService': Unsatisfied dependency expressed through field 'userRepository'
+
+3. *caused by:* org.springframework.beans.factory.BeanCreationException:
+- Error creating bean with name 'userRepository' defined in com.shoppingcart.repositories.UserRepository defined in @EnableJpaRepositories declared on ServletInitializer
+
+4. *caused by:* org.springframework.data.repository.query.QueryCreationException:
+- Could not create query for public abstract com.shoppingcart.models.User com.shoppingcart.repositories.UserRepository.findFirstByEmail(java.lang.String)
+
+5. *caused by:* java.lang.IllegalArgumentException:
+- Failed to create query for method public abstract com.shoppingcart.models.User com.shoppingcart.repositories.UserRepository.findFirstByEmail(java.lang.String)
+
+6. *caused by:* org.springframework.data.mapping.PropertyReferenceException:
+- No property 'email' found for type 'User'

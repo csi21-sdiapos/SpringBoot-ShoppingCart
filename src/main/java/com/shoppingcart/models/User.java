@@ -47,7 +47,8 @@ public class User implements Serializable {
 	private String userAvatar;
 	
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE) // https://stackoverflow.com/questions/25333711/what-is-the-use-of-the-temporal-annotation-in-hibernate
 	@Column(name = "UserEntryDate", nullable = false)
 	private Date userEntryDate;
 	

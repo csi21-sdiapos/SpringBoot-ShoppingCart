@@ -90,13 +90,12 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-<!--
+
 		<dependency>
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
-		    <version>42.5.0</version>
+		    <!-- <version>42.5.0</version> -->
 		</dependency>
--->
 	
 		<!-- _______________________________________ Thymeleaf _________________________________________ -->
 		<dependency>

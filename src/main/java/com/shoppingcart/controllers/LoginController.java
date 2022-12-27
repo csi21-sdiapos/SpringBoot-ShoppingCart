@@ -18,7 +18,7 @@ public class LoginController {
 	
 	@GetMapping("/")
 	public String welcome() {
-		return "redirect:/public/"; // construiremos esta ruta más tarde en otro controlador, la cual será el listado de todos los productos
+		return "redirect:/home/"; // construiremos esta ruta más tarde en otro controlador, la cual será el listado de todos los productos
 	}
 	
 	@GetMapping("/auth/login")

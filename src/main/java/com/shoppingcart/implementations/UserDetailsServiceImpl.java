@@ -5,12 +5,14 @@ import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 // import com.shoppingcart.models.User; // use it directly to call our class User which has the same name of the User in UserDetails
 import com.shoppingcart.repositories.UserRepository;
 
+@Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService{
 
 	@Autowired

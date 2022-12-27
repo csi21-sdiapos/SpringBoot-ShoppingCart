@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.shoppingcart.models.Product;
 import com.shoppingcart.models.User;
@@ -18,11 +20,16 @@ public class ShoppingCartApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShoppingCartApplication.class, args);
+		
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-jpa-hibernate-context.xml");
+		UserService userService = applicationContext.getBean(UserService.class);
+		ProductService productService = applicationContext.getBean(ProductService.class);
 	}
 	
 	@Bean
 	public CommandLineRunner initData(UserService userService, ProductService productService) {
 		return args -> {
+		
 			User user1 = new User("Luis Miguel", "López Magaña", null, "luismi.lopez@openwebinars.net", "luismi");
 			user1 = userService.registerUser(user1);
 

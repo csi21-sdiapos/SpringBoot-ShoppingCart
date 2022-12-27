@@ -11,13 +11,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
-@EnableWebSecurity
+
 // @ComponentScan(basePackages = { "com.shoppingcart.config" })
 /*
  * Spring Security without the WebSecurityConfigurerAdapter
  * https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
  */
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 	
 	@Autowired
@@ -63,21 +64,21 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests()
-				.requestMatchers("/", "/webjars/**", "/css/**", "/h2-console/**", "/public/**", "/auth/**", "/files/**")
+				.requestMatchers("/", "/webjars/**", "/css/**", "/h2-console/**", "/home/**", "/auth/**", "/files/**")
 				.permitAll()
 				.anyRequest().authenticated()
 				.and()
 				
 			.formLogin()
 				.loginPage("/auth/login")
-				.defaultSuccessUrl("/public/index", true)
+				.defaultSuccessUrl("/home/index", true)
 				.loginProcessingUrl("/auth/login-post")
 				.permitAll()
 				.and()
 				
 			.logout()
 				.logoutUrl("/auth/logout")
-				.logoutSuccessUrl("/public/index");
+				.logoutSuccessUrl("/home/index");
 	       
 		http.csrf().disable();				   		// to access to h2 db
 		http.headers().frameOptions().disable();	// to access to h2 db
